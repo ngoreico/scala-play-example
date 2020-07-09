@@ -1,12 +1,12 @@
-package external.client
+package external.people.client
 
 import javax.inject.Inject
 import play.api.libs.ws.{WSClient, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PersonsClient@Inject()(ws: WSClient,
-                             implicit val ec: ExecutionContext) {
+class PeopleClient@Inject()(ws: WSClient,
+                            implicit val ec: ExecutionContext) {
 
   private val protocol: String = "http"
   private val host: String = "localhost:8080"
