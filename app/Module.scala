@@ -1,6 +1,10 @@
 import com.google.inject.AbstractModule
 import java.time.Clock
 
+import external.drivinglicences.{DrivingLicencesFacade, DrivingLicencesFacadeStub}
+import external.people.facade.{PeopleFacade, PeopleFacadeStub}
+import services.PeopleService
+
 /**
  * This class is a Guice module that tells Guice how to bind several
  * different types. This Guice module is created when the Play
@@ -20,6 +24,9 @@ class Module extends AbstractModule {
     // application starts.
     //bind(classOf[ApplicationTimer]).asEagerSingleton()
     // Set AtomicCounter as the implementation for Counter.
+    bind(classOf[PeopleService])
+    bind(classOf[PeopleFacade]).toInstance(new PeopleFacadeStub)
+    bind(classOf[DrivingLicencesFacade]).toInstance(new DrivingLicencesFacadeStub)
   }
 
 }

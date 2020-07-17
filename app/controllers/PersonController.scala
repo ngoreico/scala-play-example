@@ -1,20 +1,32 @@
 package controllers
 
-import external.people.facade.PeopleFacade
 import javax.inject.Inject
 import model.ApiError
 import play.api.libs.json.Json
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.libs.ws.WSClient
+import play.api.mvc._
+import services.PeopleService
+import zio.{Task, ZIO}
 
 import scala.concurrent.ExecutionContext
 
 class PersonController @Inject()(cc: ControllerComponents,
-                                 personsFacade: PeopleFacade)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+                                 wsClient: WSClient,
+                                 peopleService: PeopleService)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  /*def getPerson(id: String) = Action.async {
-    personsFacade.getPerson(id).map {
-      case Right(person) => Ok(Json.toJson(person)) as JSON
-      case Left(error) => InternalServerError(Json.toJson(ApiError(500, error.getMessage))) as JSON
-    }
-  }*/
+  val runtime: zio.Runtime[zio.ZEnv] = zio.Runtime.default
+
+  private def ioToTask[T](io: ZIO[Any, Throwable, Result]): Task[Result] =
+    io.fold[Result](throwable => InternalServerError(Json.toJson(ApiError(500, throwable.getMessage))) as JSON, identity)
+
+  def zioAction[T](bodyParser: BodyParser[T])(actionBlock: Request[T] => ZIO[Any, Throwable, Result]): Action[T] = {
+    Action.async(bodyParser) { request =>
+      runtime.unsafeRunToFuture( ioToTask(actionBlock(request)) )
+    } //TODO provideLayer...
+  }
+
+  def getPerson(id: String) = zioAction(parse.empty){ implicit request =>
+    for (information <- peopleService.getCompletePersonInformation(id)) yield Ok(Json.toJson(information)) as JSON
+  }
+
 }
