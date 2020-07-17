@@ -19,6 +19,8 @@ libraryDependencies += "com.beachape" %% "enumeratum" % "1.6.1"
 // https://mvnrepository.com/artifact/com.beachape/enumeratum-play
 libraryDependencies += "com.beachape" %% "enumeratum-play" % "1.6.0"
 
+// https://mvnrepository.com/artifact/dev.zio/zio-logging
+libraryDependencies += "dev.zio" %% "zio-logging" % "0.3.2"
 // https://mvnrepository.com/artifact/dev.zio/zio
 libraryDependencies += "dev.zio" %% "zio" % "1.0.0-RC21-2"
 
