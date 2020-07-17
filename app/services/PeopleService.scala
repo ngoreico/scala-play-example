@@ -1,22 +1,26 @@
 package services
 
-import external.drivinglicences.DrivingLicencesFacade
-import external.people.facade.{PeopleFacade, PersonIdentity}
+import external.drivinglicences.drivingLicencesFacade.DrivingLicencesFacade
+import external.people.facade.peopleFacade.PeopleFacade
+import external.people.model.PersonIdentity
 import javax.inject.Inject
 import model.{DrivingLicence, PersonInformation}
 import zio._
+import zio.logging._
 
 import scala.concurrent.ExecutionContext
 
-class PeopleService @Inject()(peopleFacade: PeopleFacade,
-                              drivingLicencesFacade: DrivingLicencesFacade) {
+class PeopleService @Inject()() {
 
+  import PeopleFacade._
+  import DrivingLicencesFacade._
   //Code reduction...used to return Future[Either[Throwable, PersonInformation]] with its correspond monad handle stuff...
-  def getCompletePersonInformation(id: String)(implicit ec: ExecutionContext): ZIO[Any, Throwable, PersonInformation] =
+  def getCompletePersonInformation(id: String)(implicit ec: ExecutionContext): ZIO[Logging with PeopleFacade with DrivingLicencesFacade, Throwable, PersonInformation] =
     for {
-      person          <- peopleFacade.getPerson(id)
+      _               <- log.info("People service...!")
+      person          <- getPerson(id)
       //This used to return Future[Either[Throwable, Option[DrivingLicence]]] D:
-      drivingLicence  <- drivingLicencesFacade.retrieveDrivingLicence(id)
+      drivingLicence  <- retrieveDrivingLicence(id)
     } yield mapToPersonInformation(person, drivingLicence)
 
   private def mapToPersonInformation(person: PersonIdentity, drivingLicenceOption: Option[DrivingLicence]) = {

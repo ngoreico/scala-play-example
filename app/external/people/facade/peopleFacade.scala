@@ -2,16 +2,34 @@ package external.people.facade
 
 import java.time.{Duration, Instant}
 
-import javax.inject.Inject
-import play.api.libs.json.{Json, Reads}
+import external.people.model.PersonIdentity
 import zio._
+import zio.logging._
 
 import scala.concurrent.ExecutionContext
 
-trait PeopleFacade {
-  def getPerson(id: String)(implicit ec: ExecutionContext): ZIO[Any, Throwable, PersonIdentity]
-}
+object peopleFacade {
+  type PeopleFacade = Has[PeopleFacade.Service]
 
+  object PeopleFacade {
+
+    trait Service {
+      def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity]
+    }
+
+    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[PeopleFacade with Logging, PersonIdentity] = ZIO.accessM(_.get.getPerson(id))
+
+    val live: ZLayer[Logging, Throwable, Has[PeopleFacade.Service]] = ZLayer.succeed {
+      new Service {
+        override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] =
+          for {
+            _       <- log.info("People facade STUB!")
+            person  <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
+          } yield person
+      }
+    }
+  }
+}
 /*class PeopleFacadeImpl @Inject()(client: PeopleClient) extends PeopleFacade {
 
   //def getPerson(id: String)(implicit ec: ExecutionContext): Future[ErrorOr[PersonIdentity]] = {
@@ -41,12 +59,8 @@ trait PeopleFacade {
 
 }*/
 
-class PeopleFacadeStub @Inject()() extends PeopleFacade {
+/*class PeopleFacadeStub @Inject()() extends PeopleFacade {
   override def getPerson(id: String)(implicit ec: ExecutionContext): ZIO[Any, Throwable, PersonIdentity] =
     ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
-}
+}*/
 
-case class PersonIdentity(id: String, name: String, lastname: String, dateOfBirth: Instant)
-object PersonIdentity {
-  implicit val personResponseReads: Reads[PersonIdentity] = Json.reads[PersonIdentity]
-}

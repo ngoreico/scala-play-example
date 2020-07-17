@@ -1,8 +1,8 @@
 import com.google.inject.{AbstractModule, Provides}
-import external.drivinglicences.{DrivingLicencesFacade, DrivingLicencesFacadeStub}
-import external.people.facade.{PeopleFacade, PeopleFacadeStub}
+import external.drivinglicences.drivingLicencesFacade.DrivingLicencesFacade
+import external.people.facade.peopleFacade.PeopleFacade
 import javax.inject.Singleton
-import model.{AppEnv, AppEnvLayer}
+import model.AppEnvLayer
 import net.codingwell.scalaguice.ScalaModule
 import services.PeopleService
 import zio._
@@ -22,14 +22,16 @@ class Module extends AbstractModule with ScalaModule {
 
   override def configure() = {
     bind(classOf[PeopleService])
-    bind(classOf[PeopleFacade]).toInstance(new PeopleFacadeStub)
-    bind(classOf[DrivingLicencesFacade]).toInstance(new DrivingLicencesFacadeStub)
   }
 
   @Provides
   @Singleton
   def appEnvProvider: AppEnvLayer = {
-    ZEnv.live >+> Logging.console(format = (_, logEntry) => logEntry, rootLoggerName = Some("default-logger"))
+    //PeopleFacade.live ++ DrivingLicencesFacade.live
+    ZEnv.live >+>
+      Logging.console(format = (_, logEntry) => logEntry, rootLoggerName = Some("default-logger")) >+>
+      PeopleFacade.live >+>
+      DrivingLicencesFacade.live
   }
 
 }
