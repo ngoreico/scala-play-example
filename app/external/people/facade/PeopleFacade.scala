@@ -2,14 +2,11 @@ package external.people.facade
 
 import java.time.{Duration, Instant}
 
-import external.people.client.{LiveWSClientProvider, PeopleClient}
 import javax.inject.Inject
-import model.{ErrorOr, PersonClientException}
-import play.api.libs.json.{JsError, JsSuccess, Json, Reads}
-import play.api.libs.ws.WSResponse
+import play.api.libs.json.{Json, Reads}
 import zio._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 trait PeopleFacade {
   def getPerson(id: String)(implicit ec: ExecutionContext): ZIO[Any, Throwable, PersonIdentity]

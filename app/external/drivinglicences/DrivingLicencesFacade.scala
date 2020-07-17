@@ -2,12 +2,11 @@ package external.drivinglicences
 
 import java.time.{Duration, Instant}
 
-import external.people.client.LiveWSClientProvider
 import javax.inject.Inject
-import model.{DrivingLicence, ErrorOr, LicenceType}
+import model.{DrivingLicence, LicenceType}
 import zio._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 trait DrivingLicencesFacade {
   def retrieveDrivingLicence(documentId: String)(implicit ec: ExecutionContext): Task[Option[DrivingLicence]]

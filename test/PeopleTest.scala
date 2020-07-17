@@ -10,7 +10,7 @@ import org.mockito.ArgumentMatchers._
 import services.PeopleService
 import zio.ZIO
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PeopleTest extends PlaySpec with MockitoSugar {
 

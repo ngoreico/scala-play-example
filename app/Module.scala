@@ -1,9 +1,12 @@
-import com.google.inject.AbstractModule
-import java.time.Clock
-
+import com.google.inject.{AbstractModule, Provides}
 import external.drivinglicences.{DrivingLicencesFacade, DrivingLicencesFacadeStub}
 import external.people.facade.{PeopleFacade, PeopleFacadeStub}
+import javax.inject.Singleton
+import model.{AppEnv, AppEnvLayer}
+import net.codingwell.scalaguice.ScalaModule
 import services.PeopleService
+import zio._
+import zio.logging.Logging
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -15,18 +18,18 @@ import services.PeopleService
  * adding `play.modules.enabled` settings to the `application.conf`
  * configuration file.
  */
-class Module extends AbstractModule {
+class Module extends AbstractModule with ScalaModule {
 
   override def configure() = {
-    // Use the system clock as the default implementation of Clock
-    //bind(classOf[Clock]).toInstance(Clock.systemDefaultZone)
-    // Ask Guice to create an instance of ApplicationTimer when the
-    // application starts.
-    //bind(classOf[ApplicationTimer]).asEagerSingleton()
-    // Set AtomicCounter as the implementation for Counter.
     bind(classOf[PeopleService])
     bind(classOf[PeopleFacade]).toInstance(new PeopleFacadeStub)
     bind(classOf[DrivingLicencesFacade]).toInstance(new DrivingLicencesFacadeStub)
+  }
+
+  @Provides
+  @Singleton
+  def appEnvProvider: AppEnvLayer = {
+    ZEnv.live >+> Logging.console(format = (_, logEntry) => logEntry, rootLoggerName = Some("default-logger"))
   }
 
 }
