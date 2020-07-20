@@ -1,6 +1,6 @@
 import com.google.inject.{AbstractModule, Provides}
-import external.drivinglicences.drivingLicencesFacade.DrivingLicencesFacade
-import external.people.facade.peopleFacade.PeopleFacade
+import external.drivinglicences.DrivingLicencesFacade
+import external.people.facade.PeopleFacade
 import javax.inject.Singleton
 import model.AppEnvLayer
 import net.codingwell.scalaguice.ScalaModule

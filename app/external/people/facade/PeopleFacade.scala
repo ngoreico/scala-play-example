@@ -8,28 +8,31 @@ import zio.logging._
 
 import scala.concurrent.ExecutionContext
 
-object peopleFacade {
+//object peopleFacade {
+//type PeopleFacade = Has[PeopleFacade.Service]
+
+object PeopleFacade {
   type PeopleFacade = Has[PeopleFacade.Service]
 
-  object PeopleFacade {
+  trait Service {
+    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity]
+  }
 
-    trait Service {
-      def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity]
-    }
+  def getPerson(id: String)(implicit ec: ExecutionContext): RIO[PeopleFacade with Logging, PersonIdentity] = ZIO.accessM(_.get.getPerson(id))
 
-    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[PeopleFacade with Logging, PersonIdentity] = ZIO.accessM(_.get.getPerson(id))
-
-    val live: ZLayer[Logging, Throwable, Has[PeopleFacade.Service]] = ZLayer.succeed {
-      new Service {
-        override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] =
-          for {
-            _       <- log.info("People facade STUB!")
-            person  <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
-          } yield person
-      }
+  //This must be the real implementation.
+  val live: ULayer[Has[Service]] = ZLayer.succeed {
+    new Service {
+      override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] =
+        for {
+          _ <- log.info("People facade STUB!")
+          person <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
+        } yield person
     }
   }
 }
+
+//}
 /*class PeopleFacadeImpl @Inject()(client: PeopleClient) extends PeopleFacade {
 
   //def getPerson(id: String)(implicit ec: ExecutionContext): Future[ErrorOr[PersonIdentity]] = {

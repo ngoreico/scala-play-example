@@ -1,5 +1,5 @@
-import external.drivinglicences.drivingLicencesFacade.DrivingLicencesFacade
-import external.people.facade.peopleFacade.PeopleFacade
+import external.drivinglicences.DrivingLicencesFacade
+import external.people.facade.PeopleFacade
 import zio.{Has, Layer, ZIO}
 import zio.logging.Logging
 
