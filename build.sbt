@@ -23,6 +23,9 @@ libraryDependencies += "com.beachape" %% "enumeratum-play" % "1.6.0"
 libraryDependencies += "dev.zio" %% "zio-logging" % "0.3.2"
 // https://mvnrepository.com/artifact/dev.zio/zio
 libraryDependencies += "dev.zio" %% "zio" % "1.0.0-RC21-2"
+// https://mvnrepository.com/artifact/dev.zio/zio-test
+libraryDependencies += "dev.zio" %% "zio-test" % "1.0.0-RC21-2" % Test
+
 
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.2.11"
 

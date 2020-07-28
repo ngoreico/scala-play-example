@@ -1,5 +1,6 @@
 package services
 
+import external.people.client.PeopleClient.PeopleClient
 import external.people.model.PersonIdentity
 import model.{DrivingLicence, PersonInformation}
 import zio._
@@ -12,7 +13,7 @@ class PeopleService() {
   import external.people.facade.PeopleFacade._
   import external.drivinglicences.DrivingLicencesFacade._
   //Code reduction...used to return Future[Either[Throwable, PersonInformation]] with its correspond monad handle stuff...
-  def getCompletePersonInformation(id: String)(implicit ec: ExecutionContext): ZIO[DrivingLicencesFacade with Logging with PeopleFacade, Throwable, PersonInformation] =
+  def getCompletePersonInformation(id: String)(implicit ec: ExecutionContext): ZIO[DrivingLicencesFacade with Logging with PeopleFacade with PeopleClient, Throwable, PersonInformation] =
     for {
       _               <- log.info("People service...!")
       person          <- getPerson(id)

@@ -27,11 +27,11 @@ class Module extends AbstractModule with ScalaModule {
   @Provides
   @Singleton
   def appEnvProvider: AppEnvLayer = {
-    //PeopleFacade.live ++ DrivingLicencesFacade.live
     ZEnv.live >+>
       Logging.console(format = (_, logEntry) => logEntry, rootLoggerName = Some("default-logger")) >+>
       PeopleFacade.live >+>
       DrivingLicencesFacade.live
+    //>+>      PeopleClient.live
   }
 
 }

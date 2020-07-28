@@ -25,8 +25,9 @@ object PeopleFacade {
     new Service {
       override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] =
         for {
-          _ <- log.info("People facade STUB!")
-          person <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
+          _                   <- log.info("People facade!")
+          //personAsWSResponse  <- getPerson(id)
+          person              <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
         } yield person
     }
   }

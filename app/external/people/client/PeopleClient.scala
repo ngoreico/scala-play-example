@@ -1,24 +1,63 @@
-package external.people.client
+/*package external.people.client
 
-import external.people.facade.PersonIdentity
-import javax.inject.Inject
-import play.api.MarkerContext
-import play.api.libs.ws.{WSClient, WSResponse}
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import external.people.model.PersonIdentity
+import play.api.libs.ws.ahc.AhcWSClient
+import play.libs.ws.WSClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import zio._
+import zio.logging.Logging
 
-class PeopleClient@Inject()(ws: WSClient) {
-
-  private val protocol: String = "http"
-  private val host: String = "localhost:8080"
-  private val path: String = "persons"
-
-  def getPerson(id: String)(implicit ec: ExecutionContext): Task[WSResponse] =
-    ZIO.fromFuture(_ => ws.url(s"$protocol://$host/$path/$id").get())
+object PeopleClient {
+  trait Service {
+    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging with WSClient, PersonIdentity]
+  }
+}
+trait PeopleClient {
+  def client: PeopleClient.Service
 }
 
+object peopleClient {
+  def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging with WSClient with PeopleClient, PersonIdentity] =
+    ZIO.accessM(_.client.getPerson(id))
+}
+
+trait PeopleLiveClient extends PeopleClient {
+  override def client: PeopleClient.Service =
+    new PeopleClient.Service {
+      private val protocol: String = "http"
+      private val host: String = "localhost:8080"
+      private val path: String = "persons"
+
+      implicit val system       = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      val ws = AhcWSClient()
+
+      override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging with PeopleClient, PersonIdentity] = {
+        wsC
+        ZIO.fromFuture(_ => _.)
+      }
+    }
+}
+object PeopleLiveClient extends PeopleLiveClient*/
+//type PeopleClient = Has[PeopleClient.Service]
+  /*val live: URLayer[WSClient, Has[Service]] = ZLayer.succeed {
+    new Service {
+      private val protocol: String = "http"
+      private val host: String = "localhost:8080"
+      private val path: String = "persons"
+
+      override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] = {
+        ZIO.accessM[WSClient](_.url(s"$protocol://$host/$path/$id").get())
+        //ZIO.fromFuture(_ =>)
+      }
+    }
+  }*/
+/*
 trait RestClientProvider {
+  type PeopleClient
 
   def restClientProvider: RestClientProvider.Service
 
@@ -34,7 +73,7 @@ class LiveWSClientProvider(wsClient: WSClient) extends RestClientProvider {
   override def restClientProvider: RestClientProvider.Service = new RestClientProvider.Service {
     override def client: UIO[WSClient] = ZIO.effectTotal(wsClient)
   }
-}
+}*/
 
 /*
 object AppLogger {

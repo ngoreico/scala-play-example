@@ -1,15 +1,18 @@
-/*
 import java.time.{Duration, Instant, LocalDate}
 
-/*import external.drivinglicences.DrivingLicencesFacade
-import external.people.facade.{PeopleFacade, PersonIdentity}*/
+import external.people.model.PersonIdentity
+
+import external.drivinglicences.DrivingLicencesFacade
+import external.people.facade.PeopleFacade
 import model.{DrivingLicence, LicenceType, PersonInformation}
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.mockito.ArgumentMatchers._
 import services.PeopleService
-import zio.ZIO
+import zio.test._
+import Assertion._
+
 
 import scala.concurrent.ExecutionContext
 
@@ -17,7 +20,7 @@ class PeopleTest extends PlaySpec with MockitoSugar {
 
   implicit val executionContext = ExecutionContext.global
 
-  def fixture = new {
+  /*def fixture = new {
     val peopleFacadeMock: PeopleFacade = mock[PeopleFacade]
     val drivingLicencesFacadeMock: DrivingLicencesFacade = mock[DrivingLicencesFacade]
 
@@ -45,11 +48,16 @@ class PeopleTest extends PlaySpec with MockitoSugar {
       informationService.getCompletePersonInformation("1").map{ personInformation =>
           personInformation mustEqual PersonInformation(mockedPerson.id, mockedPerson.name, mockedPerson.lastname, mockedPerson.dateOfBirth, Option(fixture.mockedDrivingLicence))
       }
+    }*/
+
+  val peopleTest = suite("PeopleTest") {
+    test("With mocked client response") {
+      ???
     }
+  }
 
-
-
+  object AllSuites extends DefaultRunnableSpec {
+    def spec = suite("All tests")(peopleTest)
   }
 
 }
-*/

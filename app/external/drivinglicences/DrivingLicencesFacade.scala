@@ -8,16 +8,6 @@ import zio.logging._
 
 import scala.concurrent.ExecutionContext
 
-/*
-class DrivingLicencesFacadeStub @Inject()() extends DrivingLicencesFacade {
-  override def retrieveDrivingLicence(documentId: String)(implicit ec: ExecutionContext): Task[Option[DrivingLicence]] = {
-    val instant = Instant.now()
-    ZIO.succeed(Option(DrivingLicence(id = "1", LicenceType.B1, obtainingDate = instant, expirationDate = instant.plus(Duration.ofDays(365)))))
-  }
-}
-*/
-
-
 object DrivingLicencesFacade {
   type DrivingLicencesFacade = Has[DrivingLicencesFacade.Service]
 
