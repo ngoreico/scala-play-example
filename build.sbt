@@ -17,8 +17,17 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3
 // https://github.com/lloydmeta/enumeratum
 libraryDependencies += "com.beachape" %% "enumeratum" % "1.6.1"
 
-// https://mvnrepository.com/artifact/dev.zio/zio
-//libraryDependencies += "dev.zio" %% "zio" % "1.0.0-RC21-2"
-
 // https://mvnrepository.com/artifact/org.mockito/mockito-core
 //libraryDependencies += "org.mockito" % "mockito-core" % "3.3.3" % Test
+
+//Since module-info.class files are only useful for Java 9+ modules, you can safely discard them:
+//https://stackoverflow.com/questions/60114651/play-json-library-and-sbt-assembly-merge-error/60114988#60114988
+assemblyMergeStrategy in assembly := {
+  case "module-info.class" => MergeStrategy.discard
+  case PathList("play", "reference-overrides.conf") => MergeStrategy.concat
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
+
+assemblyJarName := s"play-example-${version.value}.jar"
