@@ -7,6 +7,8 @@ This application runs on Java 8 and is built with SBT.
 Just compile and run application with `sbt run` .
 
 ### Docker (command line) (Check installation at docker website)
+Run `dockerRun.sh` script, that executes the following commands(or run them yourself):  
+
 Create the jar with `sbt assembly` command. 
 
 Build docker image with `docker build -t "play-example:1.0" .` .
