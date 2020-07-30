@@ -20,6 +20,7 @@ class Module extends AbstractModule {
     // application starts.
     //bind(classOf[ApplicationTimer]).asEagerSingleton()
     // Set AtomicCounter as the implementation for Counter.
+
   }
 
 }

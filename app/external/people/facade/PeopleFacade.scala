@@ -5,7 +5,7 @@ import java.time.Instant
 import external.people.client.PeopleClient
 import javax.inject.Inject
 import model.{ErrorOr, PersonClientException}
-import play.api.libs.json.{JsError, JsSuccess, Json, Reads}
+import play.api.libs.json.{JsError, JsSuccess, Json, OFormat, Reads}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,5 +32,5 @@ class PeopleFacadeImpl @Inject()(client: PeopleClient) {
 
 case class PersonIdentity(id: String, name: String, lastname: String, dateOfBirth: Instant)
 object PersonIdentity {
-  implicit val personResponseReads: Reads[PersonIdentity] = Json.reads[PersonIdentity]
+  implicit val personResponseReads: OFormat[PersonIdentity] = Json.format[PersonIdentity]
 }
