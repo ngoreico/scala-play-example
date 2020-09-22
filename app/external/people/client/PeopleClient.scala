@@ -1,3 +1,20 @@
+//package external.people.client
+
+import java.time.Instant
+
+import external.people.model.PersonIdentity
+import io.circe
+import play.api.Logging
+import zio.{Has, IO, Layer, RIO, UIO, ZIO, ZLayer}
+import sttp.client._
+import sttp.client.circe._
+import sttp.client.asynchttpclient.zio._
+import io.circe.generic.auto._
+import zio._
+import zio.console.Console
+
+import scala.concurrent.ExecutionContext
+
 /*package external.people.client
 
 import akka.actor.ActorSystem
@@ -98,3 +115,4 @@ object AppLogger {
   }
 }
 */
+

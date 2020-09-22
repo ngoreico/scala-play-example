@@ -1,8 +1,9 @@
 package external.people.facade
 
-import java.time.{Duration, Instant}
 
 import external.people.model.PersonIdentity
+import external.people.peopleClient.PeopleClient
+import sttp.client.asynchttpclient.zio.SttpClient
 import zio._
 import zio.logging._
 
@@ -15,19 +16,19 @@ object PeopleFacade {
   type PeopleFacade = Has[PeopleFacade.Service]
 
   trait Service {
-    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity]
+    def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging with PeopleClient with SttpClient, PersonIdentity]
   }
 
-  def getPerson(id: String)(implicit ec: ExecutionContext): RIO[PeopleFacade with Logging, PersonIdentity] = ZIO.accessM(_.get.getPerson(id))
+  def getPerson(id: String)(implicit ec: ExecutionContext): RIO[PeopleFacade with Logging with PeopleClient with SttpClient, PersonIdentity] = ZIO.accessM(_.get.getPerson(id))
 
   //This must be the real implementation.
   val live: ULayer[Has[Service]] = ZLayer.succeed {
     new Service {
-      override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging, PersonIdentity] =
+      override def getPerson(id: String)(implicit ec: ExecutionContext): RIO[Logging with PeopleClient with SttpClient, PersonIdentity] =
         for {
           _                   <- log.info("People facade!")
-          //personAsWSResponse  <- getPerson(id)
-          person              <- ZIO.succeed(PersonIdentity(id, "nameStub", "lastnameStub", Instant.now().minus(Duration.ofDays(300000))))
+          externalInfo        <- PeopleClient.getPersonExternalInfo(id)
+          person              <- ZIO.succeed(PersonIdentity(id, externalInfo.name, externalInfo.lastname, externalInfo.dateOfBirth))
         } yield person
     }
   }

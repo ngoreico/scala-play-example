@@ -1,4 +1,3 @@
-import external.people.client.PeopleClient
 import org.scalatestplus.play.PlaySpec
 import play.api.test.WsTestClient
 
