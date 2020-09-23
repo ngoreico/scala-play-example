@@ -35,7 +35,6 @@ class Module extends AbstractModule with ScalaModule {
       DrivingLicencesFacade.live >+>
       PeopleClient.live  >+>
       AsyncHttpClientZioBackend.layer()
-      //TODO
   }
 
 }

@@ -34,14 +34,14 @@ package object peopleClient {
 
     val live: ZLayer[Logging, Throwable, Has[PeopleClient.Service]] = ZLayer.succeed {
       val request = basicRequest
-        .get(uri"https://httpbin.org/get")
+        .get(uri"http://mockbin.org/bin/9f53a076-7182-4357-a088-2395583feb4b")
         .response(asJson[PersonIdentity])
 
       new Service {
-        override def getPersonExternalInfo(id: String): RIO[Logging with SttpClient, PersonIdentity] =
-          //SttpClient.send(request)
-        //TODO
-        ???
+        override def getPersonExternalInfo(id: String): RIO[Logging with SttpClient, PersonIdentity] = for {
+          response <- SttpClient.send(request)
+          personIdentity <- ZIO.fromEither(response.body)
+        } yield personIdentity
       }
     }
 
